@@ -1,0 +1,176 @@
+name: main_uptrend
+
+display_name: 主升浪
+
+description: >
+  捕捉均线多头排列、平台突破、量价配合且尚未明显过热的趋势主升段候选。
+
+version: "1.0"
+
+category: trend
+
+tags:
+- trend
+- main_uptrend
+- momentum
+- breakout
+- daily_k
+
+screening:
+  enabled: true
+
+  market_scope:
+  - cn
+
+  hard_filters:
+    exclude_st: true
+
+    price_min: 3.0
+
+    amount_min: 120000000
+
+    market_cap_min: 3000000000
+
+    turnover_rate_min: 2.0
+
+    volume_ratio_min: 1.2
+
+    change_pct_min: 1.0
+    change_pct_max: 8.8
+
+    change_60d_min: 12.0
+    change_60d_max: 55.0
+
+    require_ma_bullish: true
+
+    require_price_above_ma20: true
+
+    signal_score_min: 70
+
+    macd_status_whitelist:
+    - bullish
+
+    rsi_status_whitelist:
+    - neutral
+
+    breakout_20d_pct_min: 0.0
+    breakout_20d_pct_max: 18.0
+
+    range_20d_pct_max: 32.0
+
+    volume_ratio_20d_min: 1.1
+    volume_ratio_20d_max: 3.8
+
+    body_pct_min: 0.4
+
+    consolidation_days_20d_min: 5
+
+  factor_weights:
+    momentum: 0.40
+    activity: 0.25
+    liquidity: 0.18
+    stability: 0.12
+    theme_heat: 0.05
+
+  scoring_profile:
+    momentum_chase_start_pct: 6.5
+
+    activity_ideal_volume_ratio: 2.2
+
+    activity_ideal_turnover_rate: 5.0
+
+    theme_heat_overheat_score: 92.0
+
+  risk_profile:
+    chase_change_pct: 9.0
+
+    abnormal_volume_ratio: 6.0
+
+    high_turnover_rate: 18.0
+
+  portfolio_profile:
+    max_same_bucket: 1
+
+    concentration_penalty: 4.5
+
+    buckets:
+      金融:
+      - 券商
+      - 银行
+      - 保险
+
+      AI算力:
+      - AI算力
+      - 算力
+      - 数据中心
+      - 服务器
+      - 光模块
+
+      半导体:
+      - 半导体
+      - 芯片
+      - 存储
+      - 先进封装
+
+      新能源:
+      - 新能源
+      - 光伏
+      - 锂电
+      - 电池
+      - 储能
+
+      周期:
+      - 钢铁
+      - 煤炭
+      - 有色
+      - 化工
+
+  scorecard_profile:
+    volume_spike_ratio: 6.0
+
+  event_profile:
+    preferred_event_tags:
+    - 业绩改善
+    - 订单增长
+    - 产业政策
+    - 产品突破
+    - 回购增持
+
+    avoided_event_tags:
+    - 风险:监管
+    - 风险:减持
+    - 风险:诉讼
+    - 风险:业绩下修
+
+    preferred_announcement_categories:
+    - 业绩预告
+    - 重大合同
+    - 产能建设
+    - 回购增持
+
+    avoided_announcement_categories:
+    - 减持
+    - 立案调查
+    - 风险提示
+
+    source_weights:
+      announcement: 1.2
+      news: 1.0
+      fund_flow: 1.1
+
+  ranking_hints: |
+    在满足主升浪技术结构的候选中，优先关注：
+
+    1. 均线多头排列清晰，价格稳定位于 MA20 上方，60 日趋势持续向上。
+
+    2. 刚完成平台突破或突破后首次放量确认，避免连续大涨后的情绪化追高。
+
+    3. 量能温和放大，换手率活跃但未出现极端爆量。
+
+    4. MACD 保持多头结构，RSI 处于健康区间。
+
+    5. 存在业绩改善、订单增长、产业政策催化或板块扩散逻辑。
+
+    6. 避免最终结果过度集中于同一热门题材，关注具备扩散效应的细分方向。
+
+  max_output: 5

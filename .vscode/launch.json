@@ -1,0 +1,88 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "AlphaSift - Save Run",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "alphasift",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "screen",
+                "dual_low",
+                "--no-llm",
+                "--save-run"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "AlphaSift - Evaluate",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "alphasift",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "evaluate",
+                "${input:runId}",
+                "--explain"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "AlphaSift - Audit",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "alphasift",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "audit"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "AlphaSift - Screen Strategy",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "alphasift.cli",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "screen",
+                "${input:strategy}",
+                "--explain",
+                "--save-run"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+        }
+    ],
+    "inputs": [
+        {
+            "id": "runId",
+            "type": "promptString",
+            "description": "输入 run_id"
+        },
+        {
+            "id": "strategy",
+            "type": "command",
+            "command": "extension.commandvariable.transform",
+            "args": {
+                "text": "${pickFile:strategyFile}",
+                "find": "^.*[\\\\/](.+)\\.yaml$",
+                "replace": "$1",
+                "pickFile": {
+                    "strategyFile": {
+                        "description": "选择策略",
+                        "include": "strategies/*.yaml",
+                        "display": "fileName"
+                    }
+                }
+            }
+        }
+    ]
+}
