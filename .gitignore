@@ -8,3 +8,4 @@ data/
 *.log
 .venv/
 local/
+litellm_config.yaml

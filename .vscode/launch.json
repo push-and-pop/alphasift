@@ -54,7 +54,7 @@
             "args": [
                 "screen",
                 "${input:strategy}",
-                "--explain",
+               // "--explain",
                 "--save-run"
             ],
             "envFile": "${workspaceFolder}/.env",

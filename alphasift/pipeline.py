@@ -472,6 +472,9 @@ def _required_snapshot_columns(filters) -> list[str]:
 
 
 def _safe_float(v) -> float | None:
+    if v is pd.NA:
+        return None
+    
     if v is None or v == "" or v == "-":
         return None
     try:
@@ -488,6 +491,9 @@ def _safe_int(v) -> int | None:
 
 
 def _safe_bool(v) -> bool | None:
+    if v is pd.NA:
+        return None
+
     if v is None or v == "":
         return None
     if isinstance(v, bool):
