@@ -1,0 +1,135 @@
+# 活跃龙头选股策略
+# 基于高弹性活跃票的龙头捕捉：
+#   1. 活跃票池：200 日涨停次数高、股性活跃、均线多头
+#   2. 中军带动性：市值中等、成交量前列、领涨/领跌两端均有板块关注度
+#   3. 进场点：均线多头排列、近两日上穿 MA5 的突破起动
+name: active_leader
+display_name: 活跃龙头
+description: |
+  捕捉高弹性活跃票的龙头进攻机会。
+  中军：市值中等+成交量前列，观察领涨/领跌对板块的带动性。
+  活跃票：股性活跃、均线多头、突破起动点入场，
+  借助龙虎榜信息识别潜在队友和对手。
+version: "1.0"
+category: trend
+tags: [momentum, activity, breakout, leader, dragon_hunter]
+
+screening:
+  enabled: true
+  market_scope: [cn]
+
+  hard_filters:
+    exclude_st: true                # 排除 ST
+    amount_min: 200000000           # 成交额 ≥2 亿（高活跃前排）
+    market_cap_min: 5000000000      # 总市值 ≥50 亿（过滤壳资源）
+    market_cap_max: 100000000000    # 总市值 ≤1000 亿（中大盘弹性好）
+    turnover_rate_min: 3.0          # 换手率 ≥3%（活跃票特征）
+    volume_ratio_min: 1.5           # 量比 ≥1.5（当日放量）
+    change_pct_min: -5.0            # 跌幅不过大（跌停票无弹性）
+    change_pct_max: 9.8             # 接近涨停但未封死仍有博弈空间
+    require_ma_bullish: true        # 均线多头排列（趋势结构好）
+    require_price_above_ma20: true  # 站上 MA20（趋势确认）
+    signal_score_min: 60            # 技术信号得分 ≥60
+    breakout_20d_pct_min: -2.0      # 距 20 日高点 ≤2%回撤（突破临界）
+    range_20d_pct_max: 35.0         # 20 日振幅不过大
+    body_pct_min: 0.3               # 当日实体 ≥0.3%（非十字星）
+    consolidation_days_20d_min: 4   # 至少 4 日横盘整理
+    volume_ratio_20d_min: 1.3       # 20 日均量比 ≥1.3（量能持续放大）
+
+  tech_weight: 0.6
+  factor_weights:
+    activity: 0.30                  # 量比+换手，龙头必须高活跃
+    momentum: 0.30                  # 涨幅+60日趋势+signal_score
+    liquidity: 0.20                 # 成交额，中军需要资金容量
+    theme_heat: 0.10                # 板块热度/扩散，有板块支撑更稳
+    stability: 0.10                 # 控制极端过热/过度追涨
+
+  scoring_profile:
+    momentum_chase_start_pct: 7.0   # 涨幅≥7% 开始惩罚追高
+    momentum_chase_penalty_slope: 8.0
+    activity_ideal_volume_ratio: 3.0    # 量比 3 倍最理想
+    activity_high_volume_ratio: 9.0     # 量比 ≥9 倍过热
+    activity_ideal_turnover_rate: 6.0   # 换手 6% 最理想
+    activity_high_turnover_rate: 22.0   # 换手 ≥22% 过热
+    stability_hot_change_pct: 8.5       # 涨幅≥8.5% 开始扣分
+    theme_heat_overheat_score: 92.0     # 板块热度≥92 分过热
+    theme_heat_overheat_penalty_slope: 0.35
+
+  risk_profile:
+    chase_change_pct: 9.8           # 接近涨停扣分
+    abnormal_volume_ratio: 9.0      # 量比≥9 倍异常扣分
+    high_turnover_rate: 24.0        # 换手≥24% 过热扣分
+    weak_signal_score: 50.0         # signal_score <50 偏弱扣分
+
+  portfolio_profile:
+    max_same_bucket: 1
+    concentration_penalty: 5.0
+    buckets:
+      金融: [券商, 银行, 保险]
+      AI算力: [AI算力, 算力, 数据中心, 服务器, 光模块, 芯片]
+      机器人: [机器人, 人形机器人, 减速器, 电机, 丝杠]
+      新能源: [新能源, 光伏, 锂电, 电池, 储能]
+      周期: [钢铁, 煤炭, 有色, 化工]
+      低空经济: [低空, 无人机, eVTOL, 飞行汽车]
+
+  scorecard_profile:
+    capital_confirmed_bonus: 2.4    # 龙虎榜机构净买入加分
+    volume_spike_ratio: 8.0         # 量比≥8 倍可能游资行为
+    hot_money_activity_min: 94.0    # 游资活跃度≥94 分才认为是"榜上有名"
+    hot_money_penalty: 1.2          # 游资砸盘风险扣分
+
+  event_profile:
+    preferred_event_tags:           # 偏好事件标签
+      - 公告利好
+      - 订单
+      - 业绩预增
+      - 涨停
+      - 游资
+      - 机构
+      - 题材
+    avoided_event_tags:             # 规避事件标签
+      - 利空
+      - 减持
+      - 监管
+      - 问询
+    preferred_announcement_categories:
+      - 业绩预告
+      - 重大合同
+      - 回购
+      - 股权激励
+    avoided_announcement_categories:
+      - 股东减持
+      - 行政处罚
+    source_weights:
+      announcement: 1.0
+      news: 0.8
+      fund_flow: 0.6
+
+  ranking_hints: |
+    你是一位擅长捕捉 A 股龙头的短线交易员。请从候选池中排序，
+    优先选出具有以下特征的标的：
+
+    1. 龙头潜质与股性活跃
+       - 股性活跃、历史涨停次数多、资金记忆好
+       - 均线多头排列且近期完成突破起动，非纯追涨
+
+    2. 板块带动性
+       - 候选所在板块有关联联动效应，而非孤立脉冲
+       - 中军标的应具备带动板块的能力
+       - 领涨或领跌两端都能吸引市场注意力
+
+    3. 进场时机
+       - 优先选择刚完成均线上穿的突破起动点
+       - 涨幅不过度透支（距离涨停还有空间），博弈仍然健康
+
+    4. 对手与队友
+       - 近期龙虎榜有知名游资或机构参与的加分
+       - 但若游资已获利较大且无新游资接力，警惕兑现风险
+
+    5. 风险排除
+       - 避免近两日单边疯涨且无板块支撑的孤立标的
+       - 刚遭遇利空（减持、监管、问询）的标的应降权或排除
+
+    最终输出排名靠前的 5 只，说明选择理由、风险点和自身偏好——
+    你更倾向"中军带动性"还是"弹性票二次冲锋"，以及是否值得观察。
+  max_output: 5
